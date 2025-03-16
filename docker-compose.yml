@@ -1,0 +1,39 @@
+version: '3.8'
+
+services: 
+  mysql:
+    image: mysql:5.7
+    container_name: mysql_container
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: drupal
+      MYSQL_USER: drupal
+      MYSQL_PASSWORD: drupal
+    volumes:
+      - mysql_data:/var/lib/mysql 
+    networks:
+      - drupal_network
+
+  drupal:
+    image: drupal:latest
+    container_name: drupal_container
+    ports:
+      - "81:80"
+    depends_on:
+      - mysql
+    environment:
+      DRUPAL_DATABASE_HOST: mysql
+      DRUPAL_DATABASE_NAME: drupal
+      DRUPAL_DATABASE_USER: drupal
+      DRUPAL_DATABASE_PASSWORD: drupal
+    volumes:
+      - drupal_data:/var/www/html 
+    networks:
+      - drupal_network
+
+volumes:
+  mysql_data:
+  drupal_data:
+
+networks:
+  drupal_network:
